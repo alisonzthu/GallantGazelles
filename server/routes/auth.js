@@ -13,7 +13,7 @@ router.get('/login', (req, res, next) => {
 	res.end('GET login bye');
 });
 
-router.post('/login', passport.authenticate('local', {session: false}), (req, res, next) => {
+router.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res) => {
 	//redirect to loggedIn home
 	// res.redirect('');
 	console.log('user on session: ', req.session);
@@ -26,11 +26,9 @@ router.post('/login', passport.authenticate('local', {session: false}), (req, re
 module.exports = router;
 
 //**************************
-var localStrategy = new LocalStrategy((username, password, done) => {
+var localStrategy = new LocalStrategy({session: true}, (username, password, done) => {
 	User.getUserByUsername(username)
 	.then((user) => {
-		console.log('this is user: ', user.rows);
-		console.log('username: ', user.rows[0].username);
 		if(user.rows.length !== 0) {
 			//check pwd
 			console.log('check pwd');
@@ -46,9 +44,6 @@ var localStrategy = new LocalStrategy((username, password, done) => {
 		done(err);
 	});
 });
-
-
-passport.use('local', localStrategy);
 
 const _comparePassword = (newPass, oldPass) => {
     //should hash newPass, and then compare
@@ -68,5 +63,7 @@ passport.deserializeUser((username, done) => {
 		done(null, false, {message: err.message});
 	});
 });
+
+passport.use('local', localStrategy);
 
 

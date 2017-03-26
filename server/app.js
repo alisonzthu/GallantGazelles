@@ -9,6 +9,15 @@ const PostgreSqlStore = require('connect-pg-simple')(session);
 const dbConfig = require('../test/db/knex.js');
 const auth = require('./routes/auth.js');
 const router = require('./routes.js');
+//avoid sessions for static resources
+app.use(express.static(path.join(__dirname, '/../client/')));
+app.use('/', express.static(path.join(__dirname, '/../client/')));
+app.use('/companies', express.static(path.join(__dirname, '/../client/')));
+app.use('/pitch', express.static(path.join(__dirname, '/../client/')));
+app.use('/signup', express.static(path.join(__dirname, '/../client/')));
+app.use('/signin', express.static(path.join(__dirname, '/../client/')));
+app.use('/notfound', express.static(path.join(__dirname, '/../client/')));
+app.use('/user', express.static(path.join(__dirname, '/../client/')));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -20,7 +29,7 @@ const sessionOptions = {
 	}),
 	cookie: {},
 	resave: true,//resave true updates session on each page view. this avoids session expire
-	saveUninitialized: false
+	saveUninitialized: true
 };
 app.use(session(sessionOptions));
 app.use(passport.initialize());
@@ -29,17 +38,11 @@ app.use(passport.session());
 app.use((req, res, next) => {
 	if(!req.session.pitchmeio) {
 	   req.session.pitchmeio = 1;
-	} 
+	}
+	console.log(passport.session()); 
   next();
 });
-app.use(express.static(path.join(__dirname, '/../client/')));
-app.use('/', express.static(path.join(__dirname, '/../client/')));
-app.use('/companies', express.static(path.join(__dirname, '/../client/')));
-app.use('/pitch', express.static(path.join(__dirname, '/../client/')));
-app.use('/signup', express.static(path.join(__dirname, '/../client/')));
-app.use('/signin', express.static(path.join(__dirname, '/../client/')));
-app.use('/notfound', express.static(path.join(__dirname, '/../client/')));
-app.use('/user', express.static(path.join(__dirname, '/../client/')));
+
 app.use('/api', router);
 app.use('/auth', auth);
 
