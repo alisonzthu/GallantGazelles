@@ -11,14 +11,9 @@ router.get('/signin', (req, res, next) => {
 	console.log('get signin', {user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
 	res.send({user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
 	res.end('GET login, bye');
-	// res.status(200).json({user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
 });
 
-router.post('/signin', passport.authenticate('local', {failureRedirect: '/signin'}), (req, res) => {
-	//redirect to loggedIn home
-	res.send({username: req.body.username, user_id: req.session.passport.user.rows[0].id});
-	// res.redirect('/notfound');
-});
+router.post('/signin', passport.authenticate('local', {successReturnToOrRedirect: '/', failureRedirect: '/signin'}));
 
 router.get('/logout', (req, res) => {
 	req.logout();
