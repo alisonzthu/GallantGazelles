@@ -1,4 +1,5 @@
 import axios from 'axios';
+import $ from 'jquery';
 
 export function editUsername(username) {
   return {
@@ -45,11 +46,25 @@ function userSubmitted() {
     type: 'USER_SUBMITTED'
   }
 }
+
 export function submitUser(username, password, profile, email) {
   return (dispatch) => {
-    dispatch(creatingUser())
+    dispatch(creatingUser());
+    // axios.post('http://localhost:8080/api/users', {username, password, email, profile })
+    // .then( results => dispatch(userSubmitted()))
+    // .catch( error => dispatch(creatingUserError(error)))
     axios.post('http://localhost:8080/api/users', {username, password, email, profile })
-    .then( results => dispatch(userSubmitted()))
-    .catch( error => dispatch(creatingUserError(error)))
+        .then(response => {
+          if (typeof response.redirect === 'string') {
+            window.location = response.redirect;
+          }
+        }).catch(error => dispatch(creatingUserError(error)));
   }
 }
+
+
+
+
+
+
+

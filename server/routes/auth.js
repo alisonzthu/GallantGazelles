@@ -2,17 +2,22 @@ const passport = require('passport');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const Path = require('path');
 
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../db/User.js');
+const UserRoute = require('../routes/Users.js');
+
+// router.post('/signup', UserRoute.postUsers);
 
 router.get('/signin', (req, res, next) => {
 	//render or redirect
 	// res.render('');
 	if(req.session.passport && req.session.passport.user) {
-		res.send({user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
+		res.redirect('/')
 	} else {
-		res.end('GET request to login, bye');
+		//else do what?
+		res.render(Path.join(__dirname, '/../../client/'));
 	}
 });
 

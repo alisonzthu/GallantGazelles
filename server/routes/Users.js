@@ -18,7 +18,7 @@ module.exports.getUsers = (req, res, next) => {
     res.status(404).send('Bad Query');
   }
 };
-
+//add email for post users:
 module.exports.postUsers = (req, res, next) => {
   const { username, password, profile } = req.body;
   const saltRounds = 10;
@@ -27,7 +27,8 @@ module.exports.postUsers = (req, res, next) => {
   .then(hash => {
     User.createUser(username, hash, profile)
     .then(results => {
-      res.status(201).send('User created!');
+      res.send({redirect: '/'});
+      // res.status(201).send('User created!');
     }).catch(error => {
       res.status(404).send('User already exists!');
     });
