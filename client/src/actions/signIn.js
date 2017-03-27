@@ -28,10 +28,10 @@ export function signIn(username, password) {
     //axios call to check information
     //pass userId or username information from request.
     axios.post('http://localhost:8080/auth/signin', {username, password} )
-    .then( $.get('http://localhost:8080/auth/signin'))
+    
     .then((results) => {
       dispatch(completeSignIn(results.data.username, results.data.user_id));
     })
-    .catch(error => dispatch(signInError(error)))
+    .catch(error => dispatch(signInError(error)));
   }
 }

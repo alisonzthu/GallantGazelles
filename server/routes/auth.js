@@ -5,20 +5,22 @@ const bcrypt = require('bcrypt');
 
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../db/User.js');
+const Path = require('path');
 
 router.get('/signin', (req, res, next) => {
 	//render or redirect
 	// res.render('');
-	console.log('get signin', {user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
-	res.send({user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
-	res.end('GET login, bye');
-	// res.status(200).json({user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
+	if(req.session.passport) {
+		res.send({user_id: req.session.passport.user.rows[0].id, username: req.session.passport.user.rows[0].username});
+	} else {
+		res.redirect('/signin');
+	}
 });
 
 router.post('/signin', passport.authenticate('local', {failureRedirect: '/signin'}), (req, res) => {
-	//redirect to loggedIn home
-	// res.json({username: req.body.username, user_id: req.session.passport.user.rows[0].id});
-	res.redirect(301, '/api/users?q=users');
+	console.log('before renderring');
+	// res.redirect(301, '/');
+	res.location('/')
 });
 
 router.get('/logout', (req, res) => {

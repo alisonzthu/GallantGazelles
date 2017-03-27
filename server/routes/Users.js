@@ -3,8 +3,13 @@ const bcrypt = require('bcrypt');
 
 module.exports.getUsers = (req, res, next) => {
   const { q, user_id } = req.query;
-  console.log('req session: ', req.session);
-  console.log('passport user: ', req.session.passport.user.rows);
+  // console.log('passport: ', req.session.passport);
+  // if(req.session.passport.user) {
+  //   res.redirect('/');
+  // }
+  
+  // console.log('req session: ', req.session);
+  // console.log('passport user: ', req.session.passport.user.rows);
   if (q === 'users') {
     User.getAllUsers()
         .then(results => res.send(results.rows))

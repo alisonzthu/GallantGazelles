@@ -6,8 +6,9 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const PostgreSqlStore = require('connect-pg-simple')(session);
 const dbConfig = require('../test/db/knex.js');
-const auth = require('./routes/auth.js');
 const app = express();
+
+const auth = require('./routes/auth.js');
 const router = require('./routes.js');
 app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, '/../client/')));
@@ -29,6 +30,16 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/auth/signin', (req, res, next) => {
+	console.log('hey');
+	console.log('passport:   dd ', req.session.passport);
+	if(req.session.passport && req.session.passport.user) {
+		res.redirect('/');
+	} else {
+		next();
+	}
+});
+
 app.use(express.static(path.join(__dirname, '/../client/')));
 app.use('/', express.static(path.join(__dirname, '/../client/')));
 app.use('/companies', express.static(path.join(__dirname, '/../client/')));
@@ -39,6 +50,7 @@ app.use('/signin', express.static(path.join(__dirname, '/../client/')));
 app.use('/notfound', express.static(path.join(__dirname, '/../client/')));
 app.use('/user', express.static(path.join(__dirname, '/../client/')));
 app.use('/api', router);
+
 app.use('/auth', auth);
 
 app.listen(8080, function() {
